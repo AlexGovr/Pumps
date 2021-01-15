@@ -11,9 +11,9 @@ from matplotlib import pyplot as plt
 
 class Curves():
 
-    def __init__(self, mark_inst, interplolate_curves = True, interp_points = 40):
+    def __init__(self, mark_inst, interplolate_curves=True, interp_points=40):
         self.q_points_coarse = get_list_points(mark_inst.q_curve_points)
-        self.q_points = np.linspace(self.q_points_coarse[0], self.q_points_coarse[-1], interp_points, endpoint = True)
+        self.q_points = np.linspace(self.q_points_coarse[0], self.q_points_coarse[-1], interp_points, endpoint=True)
         self.q_points = list(self.q_points)
 
         # interpolate curves
@@ -51,8 +51,8 @@ class Curves():
         # compute and plot load curve
         koef = self.work_point[1]/self.work_point[0]**2
         self.h_load_points = [koef*q**2 for q in self.q_points]
-        self.h_load_fun = get_interp_fun(x_points = self.q_points, y_points = self.h_load_points)
-        self.q_wp, self.h_wp = get_intersect_point(self.h_fun, self.h_load_fun, segment = (self.q_points[0], self.q_points[-1]))
+        self.h_load_fun = get_interp_fun(x_points=self.q_points, y_points=self.h_load_points)
+        self.q_wp, self.h_wp = get_intersect_point(self.h_fun, self.h_load_fun, segment=(self.q_points[0], self.q_points[-1]))
         
         if self.q_wp:
             # compute other curves' values
@@ -61,7 +61,7 @@ class Curves():
             self.p2_wp = self.p2_fun(self.q_wp)
 
 
-def get_interp_fun(mark_inst = None, which_curve = '', interp_kind = 'quadratic', x_points = None, y_points = None):
+def get_interp_fun(mark_inst=None, which_curve='', interp_kind='quadratic', x_points=None, y_points=None):
 
     if y_points == None:
         if not which_curve:
@@ -83,16 +83,16 @@ def get_interp_fun(mark_inst = None, which_curve = '', interp_kind = 'quadratic'
     if x_points == None:
         x_points = get_list_points(mark_inst.q_curve_points)
 
-    return interp1d(x_points, y_points, kind = interp_kind)
+    return interp1d(x_points, y_points, kind=interp_kind)
 
 
-def create_plot_image(mark_inst, work_point = None):
+def create_plot_image(mark_inst, work_point=None):
 
     truncate_koef = 1.2
     path1 = '/static/images/pq_and_eff.png'
     path2 = '/static/images/npsh.png'
     path3 = '/static/images/p2.png'
-    curves = Curves(mark_inst, interplolate_curves = True)
+    curves = Curves(mark_inst, interplolate_curves=True)
     
     # clean plots
     plt.clf() 
@@ -165,7 +165,7 @@ def get_list_points(str_curve):
     return [float(s) for s in str_curve.split(',')]
 
 
-def get_intersect_point(f1, f2, segment, tol = 0.001, max_iters = 1000):
+def get_intersect_point(f1, f2, segment, tol=0.001, max_iters=1000):
     max_x = segment[1]
     min_x = segment[0]
     if f1(min_x) < f2(min_x):

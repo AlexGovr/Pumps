@@ -41,11 +41,11 @@ def pumps(request):
     context = {}
 
     if eq_mark:
-        eq_mark_inst = Eq_mark.objects.get(eq_mark = eq_mark)
-        curves_data = create_plot_image(eq_mark_inst, work_point = work_point)
+        eq_mark_inst = Eq_mark.objects.get(eq_mark=eq_mark)
+        curves_data = create_plot_image(eq_mark_inst, work_point=work_point)
         context.update(curves_data)
 
-    form = Choose(ch_manuf = manuf, ch_model = eq_model, ch_type = eq_type, ch_mark = eq_mark, point_x = _x, point_y = _y)
+    form = Choose(ch_manuf=manuf, ch_model=eq_model, ch_type=eq_type, ch_mark=eq_mark, point_x=_x, point_y=_y)
     context['form'] = form
     return render(request, 'main/pumps.html', context)
 
@@ -55,9 +55,9 @@ def choice(request):
     # this should be a choice-field
     eq_type = '1s'
 
-    eq_type_instance = Eq_type.objects.get(eq_type = eq_type)
+    eq_type_instance = Eq_type.objects.get(eq_type=eq_type)
 
-    all_marks = Eq_mark.objects.filter(eq_type = eq_type_instance)
+    all_marks = Eq_mark.objects.filter(eq_type=eq_type_instance)
 
     _x = request.POST.get('x_coord')
     _y = request.POST.get('y_coord')
@@ -97,7 +97,7 @@ def choice(request):
             })
 
         # sort by efficiency
-        choice_data.sort(key = lambda x: x['eff_wp'], reverse = True)
+        choice_data.sort(key=lambda x: x['eff_wp'], reverse=True)
         context['choice_data'] = choice_data
 
     return render(request, 'main/choice.html', context)
