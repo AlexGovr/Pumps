@@ -68,34 +68,23 @@ def choice(request):
     choice_data = []
 
     if work_point:
-
         try:
-
             choosen = choose_pumps(all_marks, work_point)
-
         except ValueError:
-
             return render(request, 'main/choice.html', {'no_result': True})
 
         # create output data
         for mark in choosen:
-
             curves = Curves(mark)
-
             curves.compute_work_parameters(work_point)
-
             # make a link
             eq_type = mark.eq_type
-
             eq_model = eq_type.eq_model
-
             manuf = eq_model.manufacturer
-
             link = f'/main?eq_mark={mark.eq_mark}&eq_type={eq_type.eq_type}&eq_model={eq_model.eq_model}&manufacturer={manuf.name}&x_coord={_x}&y_coord={_y}'
 
             # pump's name
             info_name = f'{manuf.name} {eq_model.eq_model}{eq_type.eq_type}{mark.eq_mark}'
-
             choice_data.append({
                 'name': info_name,
                 'q_wp': formatted(curves.q_wp),
@@ -108,7 +97,6 @@ def choice(request):
 
         # sort by efficiency
         choice_data.sort(key = lambda x: x['eff_wp'], reverse = True)
-
         context['choice_data'] = choice_data
 
     return render(request, 'main/choice.html', context)
