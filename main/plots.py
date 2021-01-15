@@ -231,7 +231,6 @@ def get_intersect_point(f1, f2, segment, tol = 0.001, max_iters = 1000):
             diff = y1 - y2
 
     if not max_iters and (abs(diff) > tol):
-        print('get_intersect_point: intersection point not found')
         return None, None
 
     return x, y1
