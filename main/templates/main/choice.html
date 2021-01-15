@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+
+<head>
+
+    <body>
+
+        <form action="/choice/" method="post">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <input type="submit" value="Submit">
+
+        </form>
+
+        {% if choice_data.no_result %}
+
+        <p>No result</p>
+
+        {% elif choice_data.0 %}
+
+            <table cellspacing = "10">
+
+                <td>Pump</td> <td>Q</td> <td>H</td> <td>NPSH</td> <td>Efficiency</td> <td>P2</td> <td></td>
+
+                {% for info in choice_data %}
+
+                <tr>
+
+                    <td> {{info.name}} </td>
+
+                    <td> {{info.q_wp}} </td>
+
+                    <td> {{info.h_wp}} </td>
+
+                    <td> {{info.npsh_wp}} </td>
+
+                    <td> {{info.eff_wp}} </td>
+
+                    <td> {{info.p2_wp}} </td>
+
+                    <td> <a href="{{info.link}}">open</a> </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        {% endif %}
+
+    </body>

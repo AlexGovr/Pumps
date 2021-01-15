@@ -1,0 +1,10 @@
+__pycache__
+*.bat
+
+stuff/
+src/
+Data/
+*static/
+config/
+
+*.sqlite3
