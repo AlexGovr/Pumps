@@ -61,7 +61,6 @@ class Curves():
             self.p2_wp = self.p2_fun(self.q_wp)
 
 
-
 def get_interp_fun(mark_inst = None, which_curve = '', interp_kind = 'quadratic', x_points = None, y_points = None):
 
     if y_points == None:
@@ -85,6 +84,7 @@ def get_interp_fun(mark_inst = None, which_curve = '', interp_kind = 'quadratic'
         x_points = get_list_points(mark_inst.q_curve_points)
 
     return interp1d(x_points, y_points, kind = interp_kind)
+
 
 def create_plot_image(mark_inst, work_point = None):
 
@@ -155,6 +155,7 @@ def create_plot_image(mark_inst, work_point = None):
     
     return curves_data
 
+
 def get_list_points(str_curve):
     '''
     converts string of comma-separated floats into a list of floats
@@ -194,6 +195,7 @@ def get_intersect_point(f1, f2, segment, tol = 0.001, max_iters = 1000):
 
     return x, y1
 
+
 def choose_pumps(all_marks, work_point):
 
     choosen = []
@@ -202,11 +204,12 @@ def choose_pumps(all_marks, work_point):
         h_fun = get_interp_fun(mark, 'h')
         compute_y = h_fun(work_point[0])
         delta = work_point[1]/compute_y
-        
+
         if 0.5 < delta < 1.02:
             choosen.append(mark)
 
     return choosen
+
 
 def formatted(f):
     return '{:.2f}'.format(f)

@@ -49,6 +49,7 @@ def pumps(request):
     context['form'] = form
     return render(request, 'main/pumps.html', context)
 
+
 def choice(request):
 
     # this should be a choice-field

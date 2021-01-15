@@ -2,6 +2,7 @@
 from django import forms
 from .models import Eq_type, Manufacturer, Eq_model, Eq_mark
 
+
 class Choose(forms.Form):
 
     choices = [(obj.name, obj.name) for obj in Manufacturer.objects.all()]
@@ -39,6 +40,7 @@ class Choose(forms.Form):
         if point_x and point_y:
             self.fields['x_coord'].initial = point_x
             self.fields['y_coord'].initial = point_y
+
 
 class Work_point(forms.Form):
     x_coord = forms.FloatField(required = False)
