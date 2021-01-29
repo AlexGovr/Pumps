@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>Подбор</title>
+
+    <script>
+
+      function set_visible(item_class) {
+        document.querySelectorAll('.select').forEach(
+          function(page) {
+            page.hidden=true;
+          }
+        ) 
+        document.querySelector(`.${item_class}`).hidden = false;
+      };
+
+      function table_add(table) {
+        let row_num = table.children.length - 1;
+        let row_template = document.querySelector('.select-table-row-template');
+        let row = row_template.cloneNode();
+        // let col_template = document.querySelector('.select-table-col-template');
+        let scope = document.querySelector('.select-table-row-scope').cloneNode();
+        let colnum = row_template.children.length - 1;
+        
+        table.append(row)
+
+        row.hidden = false;
+        row.append(scope);
+        
+        scope.innerHTML = row_num+1;
+        for (let i=0; i<colnum; i++) {
+          let col = document.createElement('td');
+          col.innerHTML = '-'
+          row.appendChild(col)
+        }
+      }
+
+      addEventListener(
+        "DOMContentLoaded",
+        function() {
+          // switch modes
+          var table = document.querySelector('.select-table-rows');
+          var page_items = document.querySelectorAll('.page-item');
+          for (let i = 0; i < page_items.length; i++) {
+            page_items[i].onclick = function() {
+              set_visible(this.dataset.page);             
+              table_add(table);
+            }
+          }
+        }
+      );
+    </script>
+  </head>
+  <body>
+    <h1>Подбор подходящего насоса</h1>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <div>
+       <button type="button" class="btn btn-outline-primary btn-block" style="width: 200px;">Главная</button>
+       <button type="button" class="btn btn-outline-primary btn-block" style="width: 200px;">Каталог</button>
+       <button type="button" class="btn btn-outline-primary btn-block" style="width: 200px;">Подбор</button>
+       <button type="button" class="btn btn-outline-primary btn-block" style="width: 200px;">Сравнение</button>
+    </div>
+
+    <nav aria-label="Page navigation example" class="visible">
+      <ul class="pagination">
+        <li class="page-item" data-page="select-table"><a class="page-link" href="#">Таблица</a></li>
+        <li class="page-item" data-page="select-curve"><a class="page-link" href="#">Графики</a></li>
+        <li class="page-item" data-page="select-compare"><a class="page-link" href="#">Лучшие решения</a></li>
+      </ul>
+    </nav>
+
+    <div class="select select-table" hidden>
+      <p>Таблица</p>
+      <table class="table table-striped table-dark table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Бренд</th>
+            <th scope="col">Модель</th>
+            <th scope="col">DN</th>
+            <th scope="col">Стоимость</th>
+            <th scope="col">Скорость</th>
+            <th scope="col">Скорость</th>
+            <th scope="col">Q/Qопт</th>
+            <th scope="col">КПД</th>
+            <th scope="col">Мощность на валу</th>
+            <th scope="col">Расход</th>
+          </tr>
+        </thead>
+        <tbody class='select-table-rows'>
+          <tr class='select-table-row-template' hidden>
+            <th class="select-table-row-scope" scope="row">1</th>
+            <td class="select-table-col">-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="select select-curve" hidden>
+      <p>График</p>
+    </div>
+
+    <div class="select select-compare" hidden>
+      <p>Сравнение</p>
+    </div>
+    
+  </body>
+</html>
+
