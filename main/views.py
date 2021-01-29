@@ -7,7 +7,6 @@ from .models import Manufacturer, Eq_type, Eq_model, Eq_mark
 from .plots import create_plot_image, get_interp_fun, choose_pumps, Curves, formatted
 
 
-
 def pumps(request):
     
     manuf = None
@@ -52,19 +51,16 @@ def pumps(request):
 
 def choice(request):
 
-    # this should be a choice-field
+    # in future this will be a choice-field
     eq_type = '1s'
-
     eq_type_instance = Eq_type.objects.get(eq_type=eq_type)
-
     all_marks = Eq_mark.objects.filter(eq_type=eq_type_instance)
 
     _x = request.POST.get('x_coord')
     _y = request.POST.get('y_coord')
     work_point = (float(_x), float(_y)) if _x  and _y  else None
 
-    context = {}
-    context['form'] = Work_point()
+    context = {'form': Work_point()}
 
     choice_data = []
 

@@ -3,6 +3,7 @@ from django import forms
 from .models import Eq_type, Manufacturer, Eq_model, Eq_mark
 
 
+
 class Choose(forms.Form):
 
     choices = [(obj.name, obj.name) for obj in Manufacturer.objects.all()]
@@ -19,6 +20,7 @@ class Choose(forms.Form):
 
         super().__init__(*args, **kwargs)
 
+        # simple implementation of chained choice
         if ch_manuf:
             manuf_obj = Manufacturer.objects.get(name=ch_manuf)
             self.fields['eq_model'].choices = [(obj.eq_model, obj.eq_model) for obj in Eq_model.objects.filter(manufacturer=manuf_obj)]
