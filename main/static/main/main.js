@@ -64,38 +64,28 @@ function() {
   document.querySelector('.select-parameters-send').onclick = function() {
 
     let csrftoken = getCookie('csrftoken');
-
+    
+    // open and prepare request
     request = new XMLHttpRequest();
     request.open('POST', '/select/');
     request.setRequestHeader('X-CSRFToken', csrftoken);
+    request.onload = function() {
+      const data = JSON.parse(request.responseText)
+      if (data.success) {
+          console.log('success');
+      }
+    }
 
     // retrieve data to json
     let wpq = document.querySelector('.select-parameters-q').value;
     let wph = document.querySelector('.select-parameters-h').value;
     let datajson = {'wpq': wpq, 'wph': wph};
-
-    for (let i = 0; i < tr_exercises.length; i++) {
-        let trex_id = tr_exercises[i].dataset.tr_exercise_id;
-        let mark = tr_exercises[i].getElementsByClassName(`${mark_class}`)[0];
-        let estim = tr_exercises[i].getElementsByClassName(`${estim_class}`)[0];
-        datajson[trex_id] = [mark.value, estim.value];
-    }
-
-    request.onload = function() {
-        const data = JSON.parse(request.responseText)
-        if (data.success) {
-            console.log('success');
-        }
-    }
-
+    // send request
     data = new FormData();
-
     data.append('marks', JSON.stringify(datajson));
     request.send(data);
 
     return false;
-}
-}
-
+  }
 }
 );
