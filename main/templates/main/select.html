@@ -39,6 +39,22 @@
       </ul>
     </nav>
 
+    <!-- inputs -->
+    <form>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">м3/ч</span>
+        <input type="number" class="form-control select-parameters-q" placeholder="Расход">
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">м</span>
+        <input type="number" class="form-control select-parameters-h" placeholder="Напор">
+      </div>
+      <div>
+        <button type="submit" class="btn btn-primary select-parameters-send">Подобрать</button>
+      </div>
+    </form>
+
+    <!-- table -->
     <div class="select select-table" hidden>
       <p>Таблица</p>
       <table class="table table-striped table-dark table-bordered">
@@ -82,8 +98,6 @@
     <div class="select select-compare" hidden>
       <p>Сравнение</p>
     </div>
-
-    
     
   </body>
 </html>
