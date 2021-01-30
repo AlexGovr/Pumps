@@ -5,21 +5,21 @@ class Manufacturer(models.Model):
     name = models.CharField(max_length=60, blank=True, default='Unnamed')
 
 
-class Eq_model(models.Model):
-    eq_model = models.CharField(max_length=30, blank=True, default='Unnamed')
+class EqModel(models.Model):
+    eqmodel = models.CharField(max_length=30, blank=True, default='Unnamed')
     manufacturer = models.ForeignKey(Manufacturer, on_delete= models.CASCADE)
 
 
-class Eq_type(models.Model):
-    eq_type = models.CharField(max_length=30, blank=True, default='Unnamed')
-    eq_model = models.ForeignKey(Eq_model, on_delete=models.CASCADE)
+class EqType(models.Model):
+    eqtype = models.CharField(max_length=30, blank=True, default='Unnamed')
+    eqmodel = models.ForeignKey(EqModel, on_delete=models.CASCADE)
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
 
 
-class Eq_mark(models.Model):
-    eq_mark = models.CharField(max_length=60, blank=True, default='Unnamed')
-    eq_type = models.ForeignKey(Eq_type, on_delete=models.CASCADE)
-    eq_model = models.ForeignKey(Eq_model, on_delete=models.CASCADE)
+class EqMark(models.Model):
+    eqmark = models.CharField(max_length=60, blank=True, default='Unnamed')
+    eqtype = models.ForeignKey(EqType, on_delete=models.CASCADE)
+    eqmodel = models.ForeignKey(EqModel, on_delete=models.CASCADE)
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
 
     # curves fields

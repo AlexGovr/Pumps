@@ -1,18 +1,21 @@
-import os
-import pandas as pd
+from django.shortcuts import render
+
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import Choose, Work_point
-from .models import Manufacturer, Eq_type, Eq_model, Eq_mark
+from .models import Manufacturer, EqType, EqModel, EqMark
 from .plots import create_plot_image, get_interp_fun, choose_pumps, Curves, formatted
 
+
+def select(request):
+    return render(request, 'main/select.html')
 
 def pumps(request):
     
     manuf = None
-    eq_type = None
-    eq_model = None
-    eq_mark = None
+    eqtype = None
+    eqmodel = None
+    eqmark = None
     _x = None
     _y = None
     work_point = None
@@ -20,18 +23,18 @@ def pumps(request):
     if request.method == 'POST':
 
         manuf = request.POST.get('manufacturer')
-        eq_type = request.POST.get('eq_type')
-        eq_model = request.POST.get('eq_model')
-        eq_mark = request.POST.get('eq_mark')
+        eqtype = request.POST.get('eqtype')
+        eqmodel = request.POST.get('eqmodel')
+        eqmark = request.POST.get('eqmark')
         _x = request.POST.get('x_coord')
         _y = request.POST.get('y_coord')
 
     elif request.method == 'GET':
 
         manuf = request.GET.get('manufacturer')
-        eq_type = request.GET.get('eq_type')
-        eq_model = request.GET.get('eq_model')
-        eq_mark = request.GET.get('eq_mark')
+        eqtype = request.GET.get('eqtype')
+        eqmodel = request.GET.get('eqmodel')
+        eqmark = request.GET.get('eqmark')
         _x = request.GET.get('x_coord')
         _y = request.GET.get('y_coord')
     
@@ -39,12 +42,12 @@ def pumps(request):
 
     context = {}
 
-    if eq_mark:
-        eq_mark_inst = Eq_mark.objects.get(eq_mark=eq_mark)
-        curves_data = create_plot_image(eq_mark_inst, work_point=work_point)
+    if eqmark:
+        eqmark_inst = EqMark.objects.get(eqmark=eqmark)
+        curves_data = create_plot_image(eqmark_inst, work_point=work_point)
         context.update(curves_data)
 
-    form = Choose(ch_manuf=manuf, ch_model=eq_model, ch_type=eq_type, ch_mark=eq_mark, point_x=_x, point_y=_y)
+    form = Choose(ch_manuf=manuf, ch_model=eqmodel, ch_type=eqtype, ch_mark=eqmark, point_x=_x, point_y=_y)
     context['form'] = form
     return render(request, 'main/pumps.html', context)
 
@@ -52,9 +55,9 @@ def pumps(request):
 def choice(request):
 
     # in future this will be a choice-field
-    eq_type = '1s'
-    eq_type_instance = Eq_type.objects.get(eq_type=eq_type)
-    all_marks = Eq_mark.objects.filter(eq_type=eq_type_instance)
+    eqtype = '1s'
+    eqtype_instance = EqType.objects.get(eqtype=eqtype)
+    all_marks = EqMark.objects.filter(eqtype=eqtype_instance)
 
     _x = request.POST.get('x_coord')
     _y = request.POST.get('y_coord')
@@ -75,13 +78,13 @@ def choice(request):
             curves = Curves(mark)
             curves.compute_work_parameters(work_point)
             # make a link
-            eq_type = mark.eq_type
-            eq_model = eq_type.eq_model
-            manuf = eq_model.manufacturer
-            link = f'/main?eq_mark={mark.eq_mark}&eq_type={eq_type.eq_type}&eq_model={eq_model.eq_model}&manufacturer={manuf.name}&x_coord={_x}&y_coord={_y}'
+            eqtype = mark.eqtype
+            eqmodel = eqtype.eqmodel
+            manuf = eqmodel.manufacturer
+            link = f'/main?eqmark={mark.eqmark}&eqtype={eqtype.eqtype}&eqmodel={eqmodel.eqmodel}&manufacturer={manuf.name}&x_coord={_x}&y_coord={_y}'
 
             # pump's name
-            info_name = f'{manuf.name} {eq_model.eq_model}{eq_type.eq_type}{mark.eq_mark}'
+            info_name = f'{manuf.name} {eqmodel.eqmodel}{eqtype.eqtype}{mark.eqmark}'
             choice_data.append({
                 'name': info_name,
                 'q_wp': formatted(curves.q_wp),
