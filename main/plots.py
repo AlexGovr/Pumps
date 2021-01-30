@@ -197,7 +197,11 @@ def get_intersect_point(f1, f2, segment, tol=0.001, max_iters=1000):
 
 
 def choose_pumps(all_marks, work_point):
-
+    '''
+    :input: all_marks - list of EqMark objects
+    :input: work_point - tuple (wpq, wph)
+    :return: list of EqMark objects
+    '''
     choosen = []
     # choose siutable marks
     for mark in all_marks:
