@@ -41,6 +41,7 @@
 
     <!-- inputs -->
     <form>
+      {% csrf_token %}
       <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">м3/ч</span>
         <input type="number" class="form-control select-parameters-q" placeholder="Расход">

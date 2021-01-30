@@ -15,10 +15,15 @@ function getCookie(name) {
   if (document.cookie && document.cookie !== '') {
       var cookies = document.cookie.split(';');
       for (i; i < cookies.length; i++) {
-          var cookie = jQuery.trim(cookies[i]);
+          name += '=';
+          let cookie = cookies[i];
+          let ind = cookie.search();
+          if (ind >= 0){
+            cookieValue = decodeURIComponent(cookie.substring(name.length + ind));
+          }
           // Does this cookie string begin with the name we want?
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          if (cookie.substring(0, name.length + 2) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 2));
               break;
           }
       }
@@ -62,12 +67,12 @@ function() {
 
   //// form ajax button
   document.querySelector('.select-parameters-send').onclick = function() {
-
-    let csrftoken = getCookie('csrftoken');
     
+    let csrftoken = getCookie('csrftoken');
+
     // open and prepare request
     request = new XMLHttpRequest();
-    request.open('POST', '/select/');
+    request.open('POST', '/mark/post/');
     request.setRequestHeader('X-CSRFToken', csrftoken);
     request.onload = function() {
       const data = JSON.parse(request.responseText)
@@ -79,12 +84,12 @@ function() {
     // retrieve data to json
     let wpq = document.querySelector('.select-parameters-q').value;
     let wph = document.querySelector('.select-parameters-h').value;
-    let datajson = {'wpq': wpq, 'wph': wph};
+    let datajson = {'wpq': wpq, 'wph': wph, 'eqtype': '1s'};
     // send request
     data = new FormData();
     data.append('marks', JSON.stringify(datajson));
     request.send(data);
-
+    console.log('success');
     return false;
   }
 }
