@@ -1,6 +1,64 @@
 
 var indextokey, table;
 
+//// init 
+addEventListener(
+  "DOMContentLoaded",
+  function() {
+    indextokey = {
+      0: 'eqtype-eqmodel-manufacturer-name',
+      1: 'eqtype-eqmodel-eqmodel',
+      2: 'eqmark',
+      3: 'eqmark',
+      4: 'eqmark',
+      5: 'eqmark',
+      6: 'eqmark',
+      7: 'eqmark',
+      8: 'eqmark',
+      9: 'eqmark',
+    }
+    table = document.querySelector('.select-table-rows');
+    //// switcher modes
+    var page_items = document.querySelectorAll('.page-item');
+    for (let i = 0; i < page_items.length; i++) {
+      page_items[i].onclick = function() {
+        set_visible(this.dataset.page);             
+        table_add(table);
+      }
+    }
+  
+    //// form ajax button
+    document.querySelector('.select-parameters-send').onclick = function() {
+        
+      // retrieve data to json
+      let wpq = document.querySelector('.select-parameters-q').value;
+      let wph = document.querySelector('.select-parameters-h').value;
+      let datajson = {'wpq': wpq, 'wph': wph, 'eqtype': '1s'};
+      // send request
+      data = new FormData();
+      data.append('parameters', JSON.stringify(datajson));
+      console.log(data);
+      ajax_request('/mark/select/', data, 
+                    function() {
+                      const data = JSON.parse(this.responseText)
+                      table_reset(data);
+                    })
+      return false;
+    }
+  }
+);
+
+function ajax_request(url, data, handler) {
+  let csrftoken = getCookie('csrftoken');
+  // open and prepare request
+  request = new XMLHttpRequest();
+  request.open('POST', url);
+  request.setRequestHeader('X-CSRFToken', csrftoken);
+  request.send(data);
+  request.onload = handler;
+}
+
+
 function set_visible(item_class) {
     document.querySelectorAll('.select').forEach(
       function(page) {
@@ -34,7 +92,6 @@ function getCookie(name) {
 }
 
 function table_reset(data){
-  console.log('here');
   table_clear();
   for (let i=0; i<data.length; i++) {
     table_add(data[i]);
@@ -83,56 +140,3 @@ function get_deep(data, strpath) {
   }
   return val
 }
-
-addEventListener(
-"DOMContentLoaded",
-function() {
-  indextokey = {
-    0: 'eqtype-eqmodel-manufacturer-name',
-    1: 'eqtype-eqmodel-eqmodel',
-    2: 'eqmark',
-    3: 'eqmark',
-    4: 'eqmark',
-    5: 'eqmark',
-    6: 'eqmark',
-    7: 'eqmark',
-    8: 'eqmark',
-    9: 'eqmark',
-  }
-  table = document.querySelector('.select-table-rows');
-  //// switcher modes
-  var page_items = document.querySelectorAll('.page-item');
-  for (let i = 0; i < page_items.length; i++) {
-    page_items[i].onclick = function() {
-      set_visible(this.dataset.page);             
-      table_add(table);
-    }
-  }
-
-  //// form ajax button
-  document.querySelector('.select-parameters-send').onclick = function() {
-    
-    let csrftoken = getCookie('csrftoken');
-
-    // open and prepare request
-    request = new XMLHttpRequest();
-    request.open('POST', '/mark/select/');
-    request.setRequestHeader('X-CSRFToken', csrftoken);
-    request.onload = function() {
-      const data = JSON.parse(request.responseText)
-      console.log('success');
-      table_reset(data);
-    }
-
-    // retrieve data to json
-    let wpq = document.querySelector('.select-parameters-q').value;
-    let wph = document.querySelector('.select-parameters-h').value;
-    let datajson = {'wpq': wpq, 'wph': wph, 'eqtype': '1s'};
-    // send request
-    data = new FormData();
-    data.append('parameters', JSON.stringify(datajson));
-    request.send(data);
-    return false;
-  }
-}
-);
