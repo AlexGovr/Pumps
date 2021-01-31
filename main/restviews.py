@@ -29,16 +29,11 @@ class MarkViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, url_path='select', methods=['post'])
     def select(self, request):
-        print(request.data['parameters'])
         data =json.loads(request.data['parameters'])
-        print(data)
         wpq = int(data['wpq'])
         wph = int(data['wph'])
         eqtype_name = data['eqtype']
         marks = EqMark.objects.filter(eqtype=EqType.objects.get(eqtype=eqtype_name))
         choosen = choose_pumps(marks, (wpq, wph))
         srl = MarkSerializer(choosen, many=True)
-        print('here')
-        # srl.data['success'] = True
-        r = Response(srl.data)
         return Response(srl.data)
