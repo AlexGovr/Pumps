@@ -28,6 +28,7 @@ router.register(r'mark', restviews.MarkViewSet)
 urlpatterns = [
 
     path('', include(router.urls)),
+    path('init/select', restviews.init_select),
 
     path('admin/', admin.site.urls),
     path('main/', views.pumps),

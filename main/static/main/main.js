@@ -5,18 +5,6 @@ var indextokey, table;
 addEventListener(
   "DOMContentLoaded",
   function() {
-    indextokey = {
-      0: 'eqtype-eqmodel-manufacturer-name',
-      1: 'eqtype-eqmodel-eqmodel',
-      2: 'eqmark',
-      3: 'eqmark',
-      4: 'eqmark',
-      5: 'eqmark',
-      6: 'eqmark',
-      7: 'eqmark',
-      8: 'eqmark',
-      9: 'eqmark',
-    }
     table = document.querySelector('.select-table-rows');
     //// switcher modes
     var page_items = document.querySelectorAll('.page-item');
@@ -45,6 +33,12 @@ addEventListener(
                     })
       return false;
     }
+
+    ajax_request('/init/select', data=new FormData(), 
+                  function() {
+                    let data = JSON.parse(this.responseText);
+                    indextokey = data['indextokey']
+                  })
   }
 );
 
