@@ -11,7 +11,6 @@ addEventListener(
     for (let i = 0; i < page_items.length; i++) {
       page_items[i].onclick = function() {
         set_visible(this.dataset.page);             
-        table_add(table);
       }
     }
   
