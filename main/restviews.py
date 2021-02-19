@@ -31,8 +31,8 @@ class MarkViewSet(viewsets.ModelViewSet):
     @action(detail=False, url_path='select', methods=['post'])
     def select(self, request):
         data =json.loads(request.data['parameters'])
-        wpq = int(data['wpq'])
-        wph = int(data['wph'])
+        wpq = float(data['wpq'])
+        wph = float(data['wph'])
         eqtype_name = data['eqtype']
         marks = EqMark.objects.filter(eqtype=EqType.objects.get(eqtype=eqtype_name))
         choosen = choose_pumps(marks, (wpq, wph))
