@@ -1,11 +1,12 @@
 
-var indextokey, table, graph_board, board_objects = [];
+var indextokey, list_indextokey, table, select_list, graph_board, board_objects = [], data;
 
 //// init 
 addEventListener(
     "DOMContentLoaded",
     function() {
         table = document.querySelector('.select-table-rows');
+        select_list = document.querySelector('.select-list-rows');
         //// switcher modes
         var page_items = document.querySelectorAll('.page-item');
         for (let i = 0; i < page_items.length; i++) {
@@ -25,9 +26,9 @@ addEventListener(
             data.append('parameters', JSON.stringify(datajson));
             ajax_request('/mark/select/', data, 
                             function() {
-                            const data = JSON.parse(this.responseText)
+                            data = JSON.parse(this.responseText)
                             table_reset(data);
-                            graph_draw(data);
+                            graph_draw(data[0]);
                             })
             return false;
         }
@@ -35,12 +36,13 @@ addEventListener(
         // get initial data
         ajax_request('/init/select', data=new FormData(), 
                     function() {
-                        let data = JSON.parse(this.responseText);
+                        var data = JSON.parse(this.responseText);
                         indextokey = data['indextokey']
+                        list_indextokey = data['list_indextokey']
                     })
         
         //// create graph board
-        graph_board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[0,37,5,0], axis:true})
+        graph_board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[0,37,2,0], axis:true})
     }
 );
 
@@ -54,7 +56,6 @@ function ajax_request(url, data, handler) {
     request.onload = handler;
 }
 
-
 function set_visible(item_class) {
     document.querySelectorAll('.select').forEach(
         function(page) {
@@ -66,62 +67,76 @@ function set_visible(item_class) {
 
 // csrf_token 
 function getCookie(name) {
-var cookieValue = null;
-var i = 0;
-if (document.cookie && document.cookie !== '') {
-    var cookies = document.cookie.split(';');
-    for (i; i < cookies.length; i++) {
-        name += '=';
-        let cookie = cookies[i];
-        let ind = cookie.search();
-        if (ind >= 0){
-            cookieValue = decodeURIComponent(cookie.substring(name.length + ind));
-        }
-        // Does this cookie string begin with the name we want?
-        if (cookie.substring(0, name.length + 2) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 2));
-            break;
+    var cookieValue = null;
+    var i = 0;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (i; i < cookies.length; i++) {
+            name += '=';
+            let cookie = cookies[i];
+            let ind = cookie.search();
+            if (ind >= 0){
+                cookieValue = decodeURIComponent(cookie.substring(name.length + ind));
+            }
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 2) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 2));
+                break;
+            }
         }
     }
-}
-return cookieValue;
+    return cookieValue;
 }
 
 function table_reset(data){
     table_clear();
     for (let i=0; i<data.length; i++) {
-        table_add(data[i]);
+        table_add(data[i], i);
     }
 }
 
 function table_clear() {
-var left = document.querySelector('.reset');
-    while (left) {
-        left.remove();
-        var left = document.querySelector('.reset');
+    var left = document.querySelector('.reset');
+        while (left) {
+            left.remove();
+            var left = document.querySelector('.reset');
     }
 }
 
-function table_add(data) {
+function table_add(data, index) {
     let row_num = table.children.length - 1;
-    let row_template = document.querySelector('.select-table-row-template');
-    let row = row_template.cloneNode();
+
+    let row = document.querySelector('.select-table-row-template').cloneNode();
+    let scope = document.querySelector('.select-table-row-scope').cloneNode();
+    let list_row = document.querySelector('.select-list-row-template').cloneNode()
+    let list_scope = document.querySelector('.select-list-row-scope').cloneNode();
     // add class to remove tag later
     row.classList.add('reset');
-    // let col_template = document.querySelector('.select-table-col-template');
-    let scope = document.querySelector('.select-table-row-scope').cloneNode();
-    let colnum = row_template.children.length - 1;
+    list_row.classList.add('reset');
 
     table.append(row)
+    select_list.append(list_row)
 
     row.hidden = false;
     row.append(scope);
+    list_row.hidden = false
+    list_row.append(list_scope)
 
+    // fill table
     scope.innerHTML = row_num+1;
-    for (let i=0; i<colnum; i++) {
+    for (var key in Object.keys(indextokey)) {
         let col = document.createElement('td');
-        col.innerHTML = get_deep(data, indextokey[i]);
+        col.innerHTML = get_deep(data, indextokey[key]);
         row.appendChild(col)
+    }
+    // fill select list
+    list_scope.innerHTML = row_num+1
+    list_row.onclick = selectlistrow_onclick
+    list_row.dataset['index'] = index
+    for (var key in Object.keys(list_indextokey)) {
+        let col = document.createElement('td')
+        col.innerHTML = get_deep(data, indextokey[key])
+        list_row.appendChild(col)
     }
 }
 
@@ -137,9 +152,8 @@ function get_deep(data, strpath) {
     return val
 }
 
-function graph_draw(data) {
+function graph_draw(mark_data) {
     graph_clear()
-    var mark_data = data[0]
     var q_points = mark_data['q_curve_points']
     var h_points = mark_data['h_curve_points']
     var p = []
@@ -147,11 +161,19 @@ function graph_draw(data) {
         p[i] = graph_board.create('point', [q_points[i], h_points[i]], {size: 4, face: 'o'});
         board_objects.push(p[i])
     }
-    graph_board.create('spline', p, {strokeWidth:3})
+    var spline = graph_board.create('spline', p, {strokeWidth:3})
+    board_objects.push(spline)
 }
 
 function graph_clear() {
     while (board_objects.length) {
         graph_board.removeObject(board_objects.pop())
     }
+}
+
+//// clickable select list
+function selectlistrow_onclick() {
+    var index = this.dataset['index']
+    graph_clear()
+    graph_draw(data[index])
 }
