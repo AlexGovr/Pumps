@@ -1,5 +1,5 @@
 
-var indextokey, list_indextokey, table, select_list, graph_board, board_objects = [], data;
+var indextokey, list_indextokey, table, select_list, graph_board, board_objects = [], data, best_indices;
 
 //// init 
 addEventListener(
@@ -26,7 +26,9 @@ addEventListener(
             data.append('parameters', JSON.stringify(datajson));
             ajax_request('/mark/select/', data, 
                             function() {
-                            data = JSON.parse(this.responseText)
+                            var all_data = JSON.parse(this.responseText)
+                            data = all_data['all']
+                            best_indices = all_data['best']
                             table_reset(data);
                             graph_draw(data[0]);
                             })

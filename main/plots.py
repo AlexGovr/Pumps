@@ -1,6 +1,7 @@
 
 import numpy as np
 from scipy.interpolate import interp1d
+from random import choices
 
 # prevent runtime error
 import matplotlib
@@ -212,7 +213,14 @@ def choose_pumps(all_marks, work_point):
         if 0.5 < delta < 1.02:
             choosen.append(mark)
 
-    return choosen
+    return choosen, best_solutions(choosen)
+
+
+def best_solutions(choosen):
+    # just first 4 marks
+    best = list(range(min(4, len(choosen))))
+    result = dict(zip(('energy', 'cost', 'delivery', 'weight'), best))
+    return result
 
 
 def formatted(f):

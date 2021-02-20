@@ -35,10 +35,14 @@ class MarkViewSet(viewsets.ModelViewSet):
         wph = float(data['wph'])
         eqtype_name = data['eqtype']
         marks = EqMark.objects.filter(eqtype=EqType.objects.get(eqtype=eqtype_name))
-        choosen = choose_pumps(marks, (wpq, wph))
+        choosen, best_indices = choose_pumps(marks, (wpq, wph))
         srl = MarkSerializer(choosen, many=True)
         self.convert_points_to_float(srl.data)
-        return Response(srl.data)
+        data = {
+            'all': srl.data,
+            'best': best_indices,
+        }
+        return Response(data)
 
     def convert_points_to_float(self, data):
         for key in MarkSerializer.Meta.point_fields:
