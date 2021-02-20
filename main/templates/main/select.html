@@ -1,4 +1,5 @@
 {% load static %}
+{% with table_style="table-primary" %}
 
 <!doctype html>
 <html lang="en">
@@ -61,21 +62,21 @@
     <!-- table -->
     <div class="select select-table" hidden>
       <p>Таблица</p>
-      <table class="table table-striped table-dark table-bordered">
+      <table class="table table-striped {{table_style}} table-bordered">
         <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Бренд</th>
-            <th scope="col">Модель</th>
-            <th scope="col">DN</th>
-            <th scope="col">Стоимость</th>
-            <th scope="col">Скорость</th>
-            <th scope="col">Скорость</th>
-            <th scope="col">Q/Qопт</th>
-            <th scope="col">КПД</th>
-            <th scope="col">Мощность на валу</th>
-            <th scope="col">Расход</th>
-          </tr>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Бренд</th>
+                <th scope="col">Модель</th>
+                <th scope="col">DN</th>
+                <th scope="col">Стоимость</th>
+                <th scope="col">Скорость</th>
+                <th scope="col">Скорость</th>
+                <th scope="col">Q/Qопт</th>
+                <th scope="col">КПД</th>
+                <th scope="col">Мощность на валу</th>
+                <th scope="col">Расход</th>
+            </tr>
         </thead>
         <tbody class='select-table-rows'>
           <tr class='select-table-row-template' hidden>
@@ -95,17 +96,15 @@
       </table>
     </div>
 
+    <!-- graph -->
     <div class="select select-curve" hidden>
         <p>График</p>
-
-        <div style="overflow: hidden;width: 100%;">
-        </div>
         <table>
             <tr>
                 <td>
                     <div class="select-list">
                         <p>Модели</p>
-                        <table class="table table-striped table-dark table-bordered table-hover">
+                        <table class="table table-striped {{table_style}} table-bordered table-hover">
                             <thead>
                                 <tr>
                                 <th scope="col">#</th>
@@ -127,13 +126,43 @@
                     <div id="jxgbox" class="jxgbox" style="width:500px; height:600px;"></div>   
                 </td>
             </tr>
-            
         </table>
-
+    </div>
+    
+    <!-- best solutions -->
     <div class="select select-compare" hidden>
-      <p>Сравнение</p>
+      <p>Лучшие решения</p>
+      <table class="table table-striped {{table_style}} table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Бренд</th>
+                <th scope="col">Модель</th>
+                <th scope="col">КПД</th>
+                <th scope="col">Потребляемая мощность сети</th>
+                <th scope="col">Габариты</th>
+                <th scope="col">Общий вес</th>
+                <th scope="col">Сроки поставки</th>
+                <th scope="col">Скорость</th>
+            </tr>
+        </thead>
+        <tbody class='best-solutions-table-rows'>
+            <tr class='best-solutions-table-row-template' hidden>
+                <th class="best-solutions-table-row-scope" scope="row">1</th>
+                <td class="best-solutions-table-col">-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        </tbody>
+      </table>
     </div>
     
   </body>
 </html>
 
+{% endwith %}
