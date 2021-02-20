@@ -67,8 +67,3 @@ def init_select(request):
         1: 'eqtype-eqmodel-eqmodel',
     }
     return Response({'indextokey': indextokey, 'list_indextokey': list_indextokey})
-
-
-# class InitPage(APIView):
-
-#     def get()
