@@ -1,5 +1,6 @@
 
-var indextokey, list_indextokey, table, select_list, graph_board, board_objects = [], data, best_indices;
+var indextokey, list_indextokey, table, select_list, graph_board, board_objects = [], data;
+var best_indices, best_indextokey;
 
 //// init 
 addEventListener(
@@ -24,6 +25,7 @@ addEventListener(
                         var data = JSON.parse(this.responseText);
                         indextokey = data['indextokey']
                         list_indextokey = data['list_indextokey']
+                        best_indextokey = data['best_indextokey']
                     })
         
         //// create graph board
@@ -47,6 +49,7 @@ function go_select() {
                     best_indices = all_data['best']
                     table_reset(data);
                     graph_draw(data[0]);
+                    best_reset(data, best_indices)
                     })
     return false;
 }
@@ -130,7 +133,7 @@ function table_add(data, index) {
 
     // fill table
     scope.innerHTML = row_num+1;
-    for (var key in Object.keys(indextokey)) {
+    for (var key of Object.keys(indextokey)) {
         let col = document.createElement('td');
         col.innerHTML = get_deep(data, indextokey[key]);
         row.appendChild(col)
@@ -139,10 +142,32 @@ function table_add(data, index) {
     list_scope.innerHTML = row_num+1
     list_row.onclick = selectlistrow_onclick
     list_row.dataset['index'] = index
-    for (var key in Object.keys(list_indextokey)) {
+    for (var key of Object.keys(list_indextokey)) {
         let col = document.createElement('td')
         col.innerHTML = get_deep(data, indextokey[key])
         list_row.appendChild(col)
+    }
+}
+
+function best_reset(data, indices) {
+    for (var key of Object.keys(indices)) {
+        var class_name = `.best-solutions-table-row-${key}`
+        var tbl_cols = document.querySelector(class_name).children
+        var pump_index = indices[key]
+        // clear if no data
+        if (pump_index == null) {
+            for (var col_i of Object.keys(best_indextokey)) {
+                var col_key = best_indextokey[col_i]
+                tbl_cols[col_i].innerHTML = '-'
+            }
+            continue
+        }
+        // fill
+        var pump_data = data[indices[key]]
+        for (var col_i of Object.keys(best_indextokey)) {
+            var col_key = best_indextokey[col_i]
+            tbl_cols[col_i].innerHTML = get_deep(pump_data, col_key)
+        }
     }
 }
 
