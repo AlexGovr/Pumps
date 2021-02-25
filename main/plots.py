@@ -218,7 +218,7 @@ def choose_pumps(all_marks, work_point):
 
 def best_solutions(choosen):
     # just first 4 marks
-    best = list(range(min(4, len(choosen))))
+    best = list(range(min(4, len(choosen)))) + [None] * (4-len(choosen))
     result = dict(zip(('energy', 'cost', 'delivery', 'weight'), best))
     return result
 
