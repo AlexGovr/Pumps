@@ -66,7 +66,7 @@ def init_select(request):
         8: 'eqmark',
         9: 'eqmark',
     }
-    
+
     list_indextokey = {
         0: 'eqtype-eqmodel-manufacturer-name',
         1: 'eqtype-eqmodel-eqmodel',
@@ -81,7 +81,5 @@ def init_select(request):
         5: 'eqmark',
         6: 'eqmark',
         7: 'eqmark',
-        8: 'eqmark',
-        9: 'eqmark',
     }
-    return Response({'indextokey': indextokey, 'list_indextokey': list_indextokey})
+    return Response({'indextokey': indextokey, 'list_indextokey': list_indextokey, 'best_indextokey': best_indextokey})
