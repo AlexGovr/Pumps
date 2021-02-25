@@ -16,24 +16,7 @@ addEventListener(
         }
 
         //// form ajax button
-        document.querySelector('.select-parameters-send').onclick = function() {
-            // retrieve data to json
-            let wpq = document.querySelector('.select-parameters-q').value;
-            let wph = document.querySelector('.select-parameters-h').value;
-            let datajson = {'wpq': wpq, 'wph': wph, 'eqtype': '1s'};
-            // send request
-            data = new FormData();
-            data.append('parameters', JSON.stringify(datajson));
-            ajax_request('/mark/select/', data, 
-                            function() {
-                            var all_data = JSON.parse(this.responseText)
-                            data = all_data['all']
-                            best_indices = all_data['best']
-                            table_reset(data);
-                            graph_draw(data[0]);
-                            })
-            return false;
-        }
+        document.querySelector('.select-parameters-send').onclick = go_select
 
         // get initial data
         ajax_request('/init/select', data=new FormData(), 
@@ -47,6 +30,27 @@ addEventListener(
         graph_board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[0,37,2,0], axis:true})
     }
 );
+
+
+function go_select() {
+    // retrieve data to json
+    let wpq = document.querySelector('.select-parameters-q').value;
+    let wph = document.querySelector('.select-parameters-h').value;
+    let datajson = {'wpq': wpq, 'wph': wph, 'eqtype': '1s'};
+    // send request
+    data = new FormData();
+    data.append('parameters', JSON.stringify(datajson));
+    ajax_request('/mark/select/', data, 
+                    function() {
+                    var all_data = JSON.parse(this.responseText)
+                    data = all_data['all']
+                    best_indices = all_data['best']
+                    table_reset(data);
+                    graph_draw(data[0]);
+                    })
+    return false;
+}
+
 
 function ajax_request(url, data, handler) {
     let csrftoken = getCookie('csrftoken');
