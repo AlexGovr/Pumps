@@ -152,22 +152,30 @@ function table_add(data, index) {
 function best_reset(data, indices) {
     for (var key of Object.keys(indices)) {
         var class_name = `.best-solutions-table-row-${key}`
-        var tbl_cols = document.querySelector(class_name).children
+        var tbl_row = document.querySelector(class_name)
+        var tbl_cols = tbl_row.children
         var pump_index = indices[key]
         // clear if no data
         if (pump_index == null) {
             for (var col_i of Object.keys(best_indextokey)) {
                 var col_key = best_indextokey[col_i]
                 tbl_cols[col_i].innerHTML = '-'
+                tbl_row.onclick = null
             }
             continue
         }
         // fill
-        var pump_data = data[indices[key]]
+        var best_pump_index = indices[key] 
+        var pump_data = data[best_pump_index]
         for (var col_i of Object.keys(best_indextokey)) {
             var col_key = best_indextokey[col_i]
-            tbl_cols[col_i].innerHTML = get_deep(pump_data, col_key)
+            bestrow = tbl_cols[col_i]
+            bestrow.innerHTML = get_deep(pump_data, col_key)
         }
+
+        // make clickable
+        tbl_row.onclick = bestrow_onclick
+        tbl_row.dataset['index'] = best_pump_index
     }
 }
 
@@ -207,4 +215,12 @@ function selectlistrow_onclick() {
     var index = this.dataset['index']
     graph_clear()
     graph_draw(data[index])
+}
+
+//// clickable best tables
+function bestrow_onclick() {
+    var index = this.dataset['index']
+    graph_clear()
+    graph_draw(data[index])
+    set_visible('select-curve')
 }
