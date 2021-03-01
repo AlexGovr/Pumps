@@ -38,7 +38,7 @@ function go_select() {
     // retrieve data to json
     let wpq = document.querySelector('.select-parameters-q').value;
     let wph = document.querySelector('.select-parameters-h').value;
-    let datajson = {'wpq': wpq, 'wph': wph, 'eqtype': '1s'};
+    let datajson = {'wpq': wpq, 'wph': wph};
     // send request
     data = new FormData();
     data.append('parameters', JSON.stringify(datajson));
