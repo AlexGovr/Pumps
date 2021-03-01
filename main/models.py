@@ -22,6 +22,10 @@ class EqMark(models.Model):
     eqmodel = models.ForeignKey(EqModel, on_delete=models.CASCADE)
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
 
+    dn = models.CharField(max_length=10, default='not_specified')
+    cost = models.CharField(max_length=10, default='not_specified')
+    speed = models.CharField(max_length=10, default='not_specified')
+
     # curves fields
     default_curve_string = ','.join(['0.00']*8)
     h_curve_points = models.CharField(max_length=150, blank=True, default=default_curve_string)
@@ -29,3 +33,4 @@ class EqMark(models.Model):
     p2_curve_points = models.CharField(max_length=150, blank=True, default=default_curve_string)
     npsh_curve_points = models.CharField(max_length=150, blank=True, default=default_curve_string)
     efficiency_curve_points = models.CharField(max_length=150, blank=True, default=default_curve_string)
+    q_optimal = models.FloatField(default=0)
