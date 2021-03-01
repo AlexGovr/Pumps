@@ -1,0 +1,7 @@
+django
+djangorestframeword
+django-extensions
+numpy
+scipy
+pandas
+openpyxl
