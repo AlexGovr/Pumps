@@ -54,12 +54,13 @@ class Curves():
         self.h_load_points = [koef*q**2 for q in self.q_points]
         self.h_load_fun = get_interp_fun(x_points=self.q_points, y_points=self.h_load_points)
         self.q_wp, self.h_wp = get_intersect_point(self.h_fun, self.h_load_fun, segment=(self.q_points[0], self.q_points[-1]))
-        
+
         if self.q_wp:
+            self.h_wp = float(self.h_wp)
             # compute other curves' values
-            self.eff_wp = self.eff_fun(self.q_wp)
-            self.npsh_wp = self.npsh_fun(self.q_wp)
-            self.p2_wp = self.p2_fun(self.q_wp)
+            self.eff_wp = float(self.eff_fun(self.q_wp))
+            self.npsh_wp = float(self.npsh_fun(self.q_wp))
+            self.p2_wp = float(self.p2_fun(self.q_wp))
 
 
 def get_interp_fun(mark_inst=None, which_curve='', interp_kind='quadratic', x_points=None, y_points=None):
@@ -166,7 +167,7 @@ def get_list_points(str_curve):
     return [float(s) for s in str_curve.split(',')]
 
 
-def get_intersect_point(f1, f2, segment, tol=0.001, max_iters=1000):
+def get_intersect_point(f1, f2, segment, tol=0.001, max_iters=100):
     max_x = segment[1]
     min_x = segment[0]
     if f1(min_x) < f2(min_x):
@@ -203,17 +204,34 @@ def choose_pumps(all_marks, work_point):
     :input: work_point - tuple (wpq, wph)
     :return: list of EqMark objects
     '''
+    q, h = work_point
     choosen = []
+    additional_data = {}
     # choose siutable marks
     for mark in all_marks:
-        h_fun = get_interp_fun(mark, 'h')
-        compute_y = h_fun(work_point[0])
-        delta = work_point[1]/compute_y
+        curves = Curves(mark)
+        curves.compute_work_parameters(work_point)
+        actual_h = curves.h_wp
+
+        if not actual_h:
+            continue
+        delta = h/actual_h
 
         if 0.5 < delta < 1.02:
             choosen.append(mark)
+            add = {
+                'q_wp': curves.q_wp,
+                'h_wp': curves.h_wp,
+                'q_ratio': curves.q_wp/mark.q_optimal,
+                'eff_wp': curves.eff_wp,
+                'p2_wp': curves.p2_wp,
+                'npsh_wp': curves.npsh_wp,
+            }
+            # format additional_data
+            add = {k:formatted(v) for (k, v) in add.items()}
+            additional_data[mark.id] = add
 
-    return choosen, best_solutions(choosen)
+    return choosen, best_solutions(choosen), additional_data
 
 
 def best_solutions(choosen):
