@@ -1,4 +1,42 @@
 
+class GraphBoard {
+    constructor(cls_name) {
+        this.board = JXG.JSXGraph.initBoard(cls_name, {boundingbox:[0,5,5,0], axis:true})
+        this.board_objects = []
+    }
+
+    draw(mark_data) {
+        var q_points = mark_data['q_curve_points']
+        var h_points = mark_data['h_curve_points']
+        var p = []
+        for (let i = 0; i < q_points.length; i++) {
+            p[i] = this.board.create('point', [q_points[i], h_points[i]], {size: 4, face: 'o'});
+            this.board_objects.push(p[i])
+        }
+        var spline = this.board.create('spline', p, {strokeWidth:3})
+        this.board_objects.push(spline)
+        this.adjust_scale(q_points, h_points)
+    }
+
+    adjust_scale(x, y) {
+        var xmin, xmax, ymin, ymax
+        xmin = x[0] - 0.5
+        xmax = x['length'] + 0.5
+        ymax = y[0] + 0.5
+        ymin = y['length'] - 0.5
+        this.board.setBoundingBox([xmin, ymax, xmax, ymin])
+    }
+
+    clear() {
+        while (this.board_objects.length) {
+            this.board.removeObject(this.board_objects.pop())
+        }
+    }
+    
+
+    
+}
+
 var indextokey, list_indextokey, table, select_list, graph_board, board_objects = [], data;
 var best_indices, best_indextokey;
 
@@ -29,10 +67,17 @@ addEventListener(
                     })
         
         //// create graph boards
-        graph_board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[0,37,2,0], axis:true})
+        graph_board = new GraphBoard('jxgbox')
         graph_board_p2 = JXG.JSXGraph.initBoard('jxgbox_p2', {boundingbox:[0,37,2,0], axis:true})
         graph_board_eff = JXG.JSXGraph.initBoard('jxgbox_eff', {boundingbox:[0,37,2,0], axis:true})
         graph_board_npsh = JXG.JSXGraph.initBoard('jxgbox_npsh', {boundingbox:[0,37,2,0], axis:true})
+        // bound with corresponding toggle-buttons
+        document.querySelector('.select-curve-check-p2').dataset.board_class = 'jxgbox_p2'
+        document.querySelector('.select-curve-check-eff').dataset.board_class = 'jxgbox_eff'
+        document.querySelector('.select-curve-check-npsh').dataset.board_class = 'jxgbox_npsh'
+        document.querySelector('.select-curve-check-p2').onclick = selectcheck_onclick
+        document.querySelector('.select-curve-check-eff').onclick = selectcheck_onclick
+        document.querySelector('.select-curve-check-npsh').onclick = selectcheck_onclick
     }
 )
 
@@ -51,7 +96,9 @@ function go_select() {
                     data = all_data['all']
                     best_indices = all_data['best']
                     table_reset(data);
-                    graph_draw(data[0]);
+                    // graph_draw(data[0]);
+                    graph_board.clear()
+                    graph_board.draw(data[0])
                     best_reset(data, best_indices)
                     })
     return false;
@@ -215,8 +262,16 @@ function graph_clear() {
 //// clickable select list
 function selectlistrow_onclick() {
     var index = this.dataset['index']
-    graph_clear()
-    graph_draw(data[index])
+    graph_board.clear()
+    graph_board.draw(data[index])
+    // graph_clear()
+    // graph_draw(data[index])
+}
+
+//// toggling check-buttons
+function selectcheck_onclick() {
+    var board = document.querySelector(`.${this.dataset.board_class}`)
+    board.hidden = !board.hidden
 }
 
 //// clickable best tables
