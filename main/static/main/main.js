@@ -28,10 +28,13 @@ addEventListener(
                         best_indextokey = data['best_indextokey']
                     })
         
-        //// create graph board
+        //// create graph boards
         graph_board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[0,37,2,0], axis:true})
+        graph_board_p2 = JXG.JSXGraph.initBoard('jxgbox_p2', {boundingbox:[0,37,2,0], axis:true})
+        graph_board_eff = JXG.JSXGraph.initBoard('jxgbox_eff', {boundingbox:[0,37,2,0], axis:true})
+        graph_board_npsh = JXG.JSXGraph.initBoard('jxgbox_npsh', {boundingbox:[0,37,2,0], axis:true})
     }
-);
+)
 
 
 function go_select() {
@@ -54,7 +57,6 @@ function go_select() {
     return false;
 }
 
-
 function ajax_request(url, data, handler) {
     let csrftoken = getCookie('csrftoken');
     // open and prepare request
@@ -72,7 +74,7 @@ function set_visible(item_class) {
         }
     )
     document.querySelector(`.${item_class}`).hidden = false;
-};
+}
 
 // csrf_token 
 function getCookie(name) {
