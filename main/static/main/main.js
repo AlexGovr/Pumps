@@ -1,29 +1,32 @@
 
 class GraphBoard {
-    constructor(cls_name) {
+    constructor(cls_name, data_field) {
         this.board = JXG.JSXGraph.initBoard(cls_name, {boundingbox:[0,5,5,0], axis:true})
         this.board_objects = []
+        this.data_field = data_field
     }
 
     draw(mark_data) {
         var q_points = mark_data['q_curve_points']
-        var h_points = mark_data['h_curve_points']
+        var y_points = mark_data[this.data_field]
         var p = []
+        console.log(this.data_field)
+        console.log(y_points)
         for (let i = 0; i < q_points.length; i++) {
-            p[i] = this.board.create('point', [q_points[i], h_points[i]], {size: 4, face: 'o'});
+            p[i] = this.board.create('point', [q_points[i], y_points[i]], {size: 4, face: 'o'});
             this.board_objects.push(p[i])
         }
         var spline = this.board.create('spline', p, {strokeWidth:3})
         this.board_objects.push(spline)
-        this.adjust_scale(q_points, h_points)
+        this.adjust_scale(q_points, y_points)
     }
 
     adjust_scale(x, y) {
         var xmin, xmax, ymin, ymax
-        xmin = x[0] - 0.5
-        xmax = x['length'] + 0.5
-        ymax = y[0] + 0.5
-        ymin = y['length'] - 0.5
+        xmin = Math.min.apply(null, x) - 0.5
+        xmax = Math.max.apply(null, x) + 0.5
+        ymax = Math.max.apply(null, y) + 0.5
+        ymin = Math.min.apply(null, y) - 0.5
         this.board.setBoundingBox([xmin, ymax, xmax, ymin])
     }
 
@@ -31,16 +34,13 @@ class GraphBoard {
         while (this.board_objects.length) {
             this.board.removeObject(this.board_objects.pop())
         }
-    }
-    
-
-    
+    }    
 }
 
 var indextokey, list_indextokey, table, select_list, graph_board, board_objects = [], data;
 var best_indices, best_indextokey;
 
-//// init 
+//// init
 addEventListener(
     "DOMContentLoaded",
     function() {
@@ -67,10 +67,10 @@ addEventListener(
                     })
         
         //// create graph boards
-        graph_board = new GraphBoard('jxgbox')
-        graph_board_p2 = JXG.JSXGraph.initBoard('jxgbox_p2', {boundingbox:[0,37,2,0], axis:true})
-        graph_board_eff = JXG.JSXGraph.initBoard('jxgbox_eff', {boundingbox:[0,37,2,0], axis:true})
-        graph_board_npsh = JXG.JSXGraph.initBoard('jxgbox_npsh', {boundingbox:[0,37,2,0], axis:true})
+        graph_board = new GraphBoard('jxgbox', 'h_curve_points')
+        graph_board_p2 = new GraphBoard('jxgbox_p2', 'p2_curve_points')
+        graph_board_eff = new GraphBoard('jxgbox_eff', 'efficiency_curve_points')
+        graph_board_npsh = new GraphBoard('jxgbox_npsh', 'npsh_curve_points')
         // bound with corresponding toggle-buttons
         document.querySelector('.select-curve-check-p2').dataset.board_class = 'jxgbox_p2'
         document.querySelector('.select-curve-check-eff').dataset.board_class = 'jxgbox_eff'
@@ -97,8 +97,7 @@ function go_select() {
                     best_indices = all_data['best']
                     table_reset(data);
                     // graph_draw(data[0]);
-                    graph_board.clear()
-                    graph_board.draw(data[0])
+                    draw_graphs(data[0])
                     best_reset(data, best_indices)
                     })
     return false;
@@ -238,6 +237,18 @@ function get_deep(data, strpath) {
         val = val[keys[i]];
     }
     return val
+}
+
+function draw_graphs(mark_data) {
+    graph_board.clear()
+    graph_board_p2.clear()
+    graph_board_eff.clear()
+    graph_board_npsh.clear()
+    graph_board.draw(mark_data)
+    graph_board_p2.draw(mark_data)
+    graph_board_eff.draw(mark_data)
+    graph_board_npsh.draw(mark_data)
+    console.log('here')
 }
 
 function graph_draw(mark_data) {
