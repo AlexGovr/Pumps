@@ -18,14 +18,14 @@ class InstanceHandler:
         key = model.__name__
         try:
             inst = model.objects.get(**kwargs)
-            self.__addinfo__(key, 'update')
+            self._addinfo(key, 'update')
         except ObjectDoesNotExist:
             inst = model(**kwargs)
             inst.save()
-            self.__addinfo__(key, 'new')
+            self._addinfo(key, 'new')
         return inst
     
-    def __addinfo__(self, key, action):
+    def _addinfo(self, key, action):
         if key not in self.info:
             self.info[key] = {
                 'new': 0,
@@ -58,6 +58,7 @@ def fill_from_ws(table, manuf, handler):
         dn = table['dn'][row]
         cost = table['cost'][row]
         speed = table['speed'][row]
+        mass = table['mass'][row]
         q_points = list_by_prefix('q', table, row)
         p2_points = list_by_prefix('p', table, row)
         npsh_points = list_by_prefix('npsh', table, row)
@@ -80,9 +81,10 @@ def fill_from_ws(table, manuf, handler):
         mark_inst.npsh_curve_points = ','.join(npsh_points)
         mark_inst.efficiency_curve_points = ','.join(efficiency_points)
         mark_inst.q_optimal = q_optimal
-        mark_inst.dn=dn
-        mark_inst.cost=cost
-        mark_inst.speed=speed
+        mark_inst.dn = dn
+        mark_inst.cost = cost
+        mark_inst.speed = speed
+        mark_inst.mass = mass
         mark_inst.save()
 
 def list_by_prefix(prefix, table, row):

@@ -45,7 +45,7 @@ class MarkViewSet(viewsets.ModelViewSet):
         return Response(data)
 
     def convert_points_to_float(self, data):
-        for key in MarkSerializer.Meta.point_fields:
+        for key in MarkSerializer.Meta.curve_fields:
             for mark_data in data:
                 mark_data[key] = get_list_points(mark_data[key])
         return data

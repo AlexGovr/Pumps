@@ -33,6 +33,17 @@ class MarkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EqMark
-        fields = ['id', 'eqmark', 'eqtype', 'eqmodel', 'manufacturer', 'cost', 'speed', 'dn', 'q_optimal']
-        point_fields = ['h_curve_points', 'q_curve_points', 'p2_curve_points', 'npsh_curve_points', 'efficiency_curve_points']
-        fields += point_fields
+        fields = [
+            'id', 'eqmark', 'eqtype',
+            'eqmodel', 'manufacturer',
+            'cost', 'speed', 'dn',
+            'q_optimal', 'mass',
+        ]
+        curve_fields = [
+            'h_curve_points',
+            'q_curve_points',
+            'p2_curve_points',
+            'npsh_curve_points',
+            'efficiency_curve_points',
+        ]
+        fields += curve_fields
