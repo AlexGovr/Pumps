@@ -1,40 +1,58 @@
 
 class GraphBoard {
-    constructor(cls_name, data_field) {
-        this.board = JXG.JSXGraph.initBoard(cls_name, {boundingbox:[0,5,5,0], axis:true})
-        this.board_objects = []
+    constructor(tag_cls, data_field) {
+        this.board = JXG.JSXGraph.initBoard(tag_cls, {boundingbox:[0,5,5,0], axis:true})
+        this.board_objects = {}
+        this.x = {}
+        this.y = {}
         this.data_field = data_field
     }
 
-    draw(mark_data) {
+    draw(mark_data, key) {
         var q_points = mark_data['q_curve_points']
         var y_points = mark_data[this.data_field]
+        this.x[key] = q_points
+        this.y[key] = y_points
         var p = []
-        console.log(this.data_field)
-        console.log(y_points)
+        var mark_board_objects = []
+        this.board_objects[key] = mark_board_objects
         for (let i = 0; i < q_points.length; i++) {
             p[i] = this.board.create('point', [q_points[i], y_points[i]], {size: 4, face: 'o'});
-            this.board_objects.push(p[i])
+            mark_board_objects.push(p[i])
         }
         var spline = this.board.create('spline', p, {strokeWidth:3})
-        this.board_objects.push(spline)
-        this.adjust_scale(q_points, y_points)
+        mark_board_objects.push(spline)
+        this.adjust_scale()
     }
 
-    adjust_scale(x, y) {
+    adjust_scale() {
         var xmin, xmax, ymin, ymax
-        xmin = Math.min.apply(null, x) - 0.5
-        xmax = Math.max.apply(null, x) + 0.5
-        ymax = Math.max.apply(null, y) + 0.5
-        ymin = Math.min.apply(null, y) - 0.5
+        xmin = xmax = ymin = ymax = 0
+        for(var key of Object.keys(this.x)) {
+            var x = this.x[key]
+            var y = this.y[key]
+            xmin = Math.min.apply(null, x.concat([xmin])) - 0.5
+            xmax = Math.max.apply(null, x.concat([xmax])) + 0.5
+            ymax = Math.max.apply(null, y.concat([ymax])) + 0.5
+            ymin = Math.min.apply(null, y.concat([ymin])) - 0.5
+        }
         this.board.setBoundingBox([xmin, ymax, xmax, ymin])
     }
 
-    clear() {
-        while (this.board_objects.length) {
-            this.board.removeObject(this.board_objects.pop())
+    clear(key) {
+        var mark_board_objects = this.board_objects[key]
+        while (mark_board_objects.length) {
+            this.board.removeObject(mark_board_objects.pop())
+            delete this.x[key]
+            delete this.y[key]
         }
-    }    
+    }
+
+    clearall() {
+        for (key of Object.keys(this.board_objects)) {
+            this.clear(key)
+        }
+    }
 }
 
 var indextokey, list_indextokey, table, select_list, graph_board, board_objects = [], data;
@@ -240,15 +258,14 @@ function get_deep(data, strpath) {
 }
 
 function draw_graphs(mark_data) {
-    graph_board.clear()
-    graph_board_p2.clear()
-    graph_board_eff.clear()
-    graph_board_npsh.clear()
+    graph_board.clearall()
+    graph_board_p2.clearall()
+    graph_board_eff.clearall()
+    graph_board_npsh.clearall()
     graph_board.draw(mark_data)
     graph_board_p2.draw(mark_data)
     graph_board_eff.draw(mark_data)
     graph_board_npsh.draw(mark_data)
-    console.log('here')
 }
 
 function graph_draw(mark_data) {
