@@ -310,6 +310,7 @@ function selectcheck_onclick() {
 
 //// clickable best tables
 function bestrow_onclick() {
-    // var index = this.dataset['index']
+    var mark_index = this.dataset.index
+    draw_graphs(mark_index)
     set_visible('select-curve')
 }
