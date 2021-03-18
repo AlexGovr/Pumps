@@ -120,7 +120,6 @@ function go_select() {
                     data = all_data['all']
                     best_indices = all_data['best']
                     table_reset(data);
-                    // graph_draw(data[0]);
                     clearall_graphs()
                     draw_graphs(0)
                     best_reset(data, best_indices)
@@ -285,25 +284,6 @@ function clearall_graphs() {
     graph_board_npsh.clearall()
 }
 
-function graph_draw(mark_data) {
-    graph_clear()
-    var q_points = mark_data['q_curve_points']
-    var h_points = mark_data['h_curve_points']
-    var p = []
-    for (let i = 0; i < q_points.length; i++) {
-        p[i] = graph_board.create('point', [q_points[i], h_points[i]], {size: 4, face: 'o'});
-        board_objects.push(p[i])
-    }
-    var spline = graph_board.create('spline', p, {strokeWidth:3})
-    board_objects.push(spline)
-}
-
-function graph_clear() {
-    while (board_objects.length) {
-        graph_board.removeObject(board_objects.pop())
-    }
-}
-
 //// clickable select list
 function selectlistrow_onclick() {
     var index = this.dataset['index']
@@ -323,8 +303,6 @@ function selectcheck_onclick() {
 
 //// clickable best tables
 function bestrow_onclick() {
-    var index = this.dataset['index']
-    graph_clear()
-    graph_draw(data[index])
+    // var index = this.dataset['index']
     set_visible('select-curve')
 }
