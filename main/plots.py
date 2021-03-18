@@ -27,6 +27,10 @@ class Curves():
         self.eff_points = None
         self.npsh_points = None
         self.p2_points = None
+        # compute optimal point
+        _q_opt = mark_inst.q_optimal
+        _h_opt = self.h_fun(_q_opt)
+        self.work_point_opt = (_q_opt, _h_opt)
 
         if interplolate_curves:
             self.h_points = self.h_fun(self.q_points)
@@ -43,8 +47,10 @@ class Curves():
         self.npsh_wp = None
         self.p2_wp = None
 
-    def compute_work_parameters(self, work_point):
-
+    def compute_work_parameters(self, work_point=None):
+        
+        if work_point is None:
+            work_point = self.work_point_opt
         self.work_point = work_point
         if not (self.work_point[0] > 0 and self.work_point[1]) > 0:
             raise Exception('Invalid work point!')
@@ -235,10 +241,19 @@ def choose_pumps(all_marks, work_point):
 
 
 def best_solutions(choosen):
-    # just first 4 marks
-    best = list(range(min(4, len(choosen)))) + [None] * (4-len(choosen))
-    result = dict(zip(('energy', 'cost', 'delivery', 'weight'), best))
+    result = {
+        'energy': max(choosen, key=work_efficiency).id,
+        'cost': min(choosen, key=lambda m: m.cost).id,
+        'delivery': choosen[0].id,
+        'weight': min(choosen, key=lambda m: m.mass).id,
+    }
     return result
+
+
+def work_efficiency(mark):
+    curves = Curves(mark)
+    curves.compute_work_parameters()
+    return curves.eff_wp
 
 
 def formatted(f):
