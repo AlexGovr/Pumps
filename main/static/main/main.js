@@ -43,6 +43,7 @@ class GraphBoard {
         var mark_board_objects = this.board_objects[key]
         while (mark_board_objects.length) {
             this.board.removeObject(mark_board_objects.pop())
+            delete this.board_objects[key]
             delete this.x[key]
             delete this.y[key]
         }
@@ -52,6 +53,11 @@ class GraphBoard {
         for (key of Object.keys(this.board_objects)) {
             this.clear(key)
         }
+    }
+
+    is_drawn(index) {
+        console.log(this.board_objects)
+        return index in this.board_objects
     }
 }
 
@@ -115,7 +121,8 @@ function go_select() {
                     best_indices = all_data['best']
                     table_reset(data);
                     // graph_draw(data[0]);
-                    draw_graphs(data[0])
+                    clearall_graphs()
+                    draw_graphs(0)
                     best_reset(data, best_indices)
                     })
     return false;
@@ -180,7 +187,6 @@ function table_clear() {
 
 function table_add(data, index) {
     let row_num = table.children.length - 1;
-
     let row = document.querySelector('.select-table-row-template').cloneNode();
     let scope = document.querySelector('.select-table-row-scope').cloneNode();
     let list_row = document.querySelector('.select-list-row-template').cloneNode()
@@ -257,15 +263,26 @@ function get_deep(data, strpath) {
     return val
 }
 
-function draw_graphs(mark_data) {
+function draw_graphs(index) {
+    var mark_data = data[index]
+    graph_board.draw(mark_data, index)
+    graph_board_p2.draw(mark_data, index)
+    graph_board_eff.draw(mark_data, index)
+    graph_board_npsh.draw(mark_data, index)
+}
+
+function clear_graphs(index) {
+    graph_board.clear(index)
+    graph_board_p2.clear(index)
+    graph_board_eff.clear(index)
+    graph_board_npsh.clear(index)
+}
+
+function clearall_graphs() {
     graph_board.clearall()
     graph_board_p2.clearall()
     graph_board_eff.clearall()
     graph_board_npsh.clearall()
-    graph_board.draw(mark_data)
-    graph_board_p2.draw(mark_data)
-    graph_board_eff.draw(mark_data)
-    graph_board_npsh.draw(mark_data)
 }
 
 function graph_draw(mark_data) {
@@ -290,10 +307,12 @@ function graph_clear() {
 //// clickable select list
 function selectlistrow_onclick() {
     var index = this.dataset['index']
-    graph_board.clear()
-    graph_board.draw(data[index])
-    // graph_clear()
-    // graph_draw(data[index])
+    if (graph_board.is_drawn(index)) {
+        clear_graphs(index)
+    }
+    else {
+        draw_graphs(index)
+    }
 }
 
 //// toggling check-buttons
