@@ -221,13 +221,19 @@ function table_add(data, index) {
 }
 
 function best_reset(data, indices) {
+    function _get_mark_data(id) {
+        for(var ind in data) {
+            if(data[ind]['id'] == id) {return ind}
+        }
+        return null
+    }
     for (var key of Object.keys(indices)) {
         var class_name = `.best-solutions-table-row-${key}`
         var tbl_row = document.querySelector(class_name)
         var tbl_cols = tbl_row.children
-        var pump_index = indices[key]
+        var pump_id = indices[key]
         // clear if no data
-        if (pump_index == null) {
+        if (pump_id == null) {
             for (var col_i of Object.keys(best_indextokey)) {
                 var col_key = best_indextokey[col_i]
                 tbl_cols[col_i].innerHTML = '-'
@@ -236,22 +242,23 @@ function best_reset(data, indices) {
             continue
         }
         // fill
-        var best_pump_index = indices[key] 
-        var pump_data = data[best_pump_index]
+        var mark_index = _get_mark_data(pump_id)
+        var mark_data = data[mark_index]
         for (var col_i of Object.keys(best_indextokey)) {
             var col_key = best_indextokey[col_i]
             bestrow = tbl_cols[col_i]
-            bestrow.innerHTML = get_deep(pump_data, col_key)
+            bestrow.innerHTML = get_deep(mark_data, col_key)
         }
 
         // make clickable
         tbl_row.onclick = bestrow_onclick
-        tbl_row.dataset['index'] = best_pump_index
+        tbl_row.dataset['index'] = mark_index
     }
 }
 
 function get_deep(data, strpath) {
     var keys = strpath.split('-');
+    console.log(data)
     var val = data[keys[0]];
     for (let i = 1; i < keys.length; i++) {
         if (!(keys[i] in val)) {
