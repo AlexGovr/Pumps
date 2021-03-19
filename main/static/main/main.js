@@ -59,7 +59,7 @@ class GraphBoard {
     }
 
     clearall() {
-        for (key of Object.keys(this.board_objects)) {
+        for (var key of Object.keys(this.board_objects)) {
             this.clear(key)
         }
     }
