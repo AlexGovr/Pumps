@@ -18,13 +18,17 @@ class GraphBoard {
         var mark_board_objects = []
         this.board_objects[key] = mark_board_objects
         for (var i in q_points) {
-            p[i] = this.board.create('point', [q_points[i], y_points[i]], {size: 4, face: 'o'});
+            p[i] = this.board.create('point', [q_points[i], y_points[i]]);
         }
         var spline = this.board.create('spline', p, {strokeWidth:3})
         mark_board_objects.push(spline)
         this.adjust_scale()
-
-        // remove points
+        // add working point
+        var x_wp = mark_data['q_wp']
+        var y_wp = mark_data[this.wp_field]
+        var wp = this.board.create('point', [x_wp, y_wp], {size: 4, face: 'o'})
+        mark_board_objects.push(wp)
+        // remove spline points
         for (var i in p) {
             this.board.removeObject(p[i])
         }
@@ -96,10 +100,10 @@ addEventListener(
                     })
         
         //// create graph boards
-        graph_board = new GraphBoard('jxgbox', 'h_curve_points')
-        graph_board_p2 = new GraphBoard('jxgbox_p2', 'p2_curve_points')
-        graph_board_eff = new GraphBoard('jxgbox_eff', 'efficiency_curve_points')
-        graph_board_npsh = new GraphBoard('jxgbox_npsh', 'npsh_curve_points')
+        graph_board = new GraphBoard('jxgbox', 'h_curve_points', 'h_wp')
+        graph_board_p2 = new GraphBoard('jxgbox_p2', 'p2_curve_points', 'p2_wp')
+        graph_board_eff = new GraphBoard('jxgbox_eff', 'efficiency_curve_points', 'eff_wp')
+        graph_board_npsh = new GraphBoard('jxgbox_npsh', 'npsh_curve_points', 'npsh_wp')
         // bound with corresponding toggle-buttons
         document.querySelector('.select-curve-check-p2').dataset.board_class = 'jxgbox_p2'
         document.querySelector('.select-curve-check-eff').dataset.board_class = 'jxgbox_eff'
