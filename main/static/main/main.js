@@ -1,11 +1,12 @@
 
 class GraphBoard {
-    constructor(tag_cls, data_field) {
+    constructor(tag_cls, data_field, wp_field) {
         this.board = JXG.JSXGraph.initBoard(tag_cls, {boundingbox:[0,5,5,0], axis:true})
         this.board_objects = {}
         this.x = {}
         this.y = {}
         this.data_field = data_field
+        this.wp_field = wp_field
     }
 
     draw(mark_data, key) {
@@ -16,13 +17,17 @@ class GraphBoard {
         var p = []
         var mark_board_objects = []
         this.board_objects[key] = mark_board_objects
-        for (let i = 0; i < q_points.length; i++) {
+        for (var i in q_points) {
             p[i] = this.board.create('point', [q_points[i], y_points[i]], {size: 4, face: 'o'});
-            mark_board_objects.push(p[i])
         }
         var spline = this.board.create('spline', p, {strokeWidth:3})
         mark_board_objects.push(spline)
         this.adjust_scale()
+
+        // remove points
+        for (var i in p) {
+            this.board.removeObject(p[i])
+        }
     }
 
     adjust_scale() {
