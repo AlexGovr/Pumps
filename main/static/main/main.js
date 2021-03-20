@@ -40,10 +40,10 @@ class GraphBoard {
         for(var key of Object.keys(this.x)) {
             var x = this.x[key]
             var y = this.y[key]
-            xmin = Math.min.apply(null, x.concat([xmin])) - 0.5
-            xmax = Math.max.apply(null, x.concat([xmax])) + 0.5
-            ymax = Math.max.apply(null, y.concat([ymax])) + 0.5
-            ymin = Math.min.apply(null, y.concat([ymin])) - 0.5
+            xmax = Math.max.apply(null, x.concat([xmax])) * 1.1
+            ymax = Math.max.apply(null, y.concat([ymax])) * 1.1
+            xmin = -xmax * 0.1
+            ymin = -ymax * 0.1
         }
         this.board.setBoundingBox([xmin, ymax, xmax, ymin])
     }
