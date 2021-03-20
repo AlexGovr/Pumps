@@ -59,6 +59,8 @@ def fill_from_ws(table, manuf, handler):
         cost = table['cost'][row]
         speed = table['speed'][row]
         mass = table['mass'][row]
+        capacity = table['capacity'][row]
+        size = table['size'][row]
         q_points = list_by_prefix('q', table, row)
         p2_points = list_by_prefix('p', table, row)
         npsh_points = list_by_prefix('npsh', table, row)
@@ -81,10 +83,12 @@ def fill_from_ws(table, manuf, handler):
         mark_inst.npsh_curve_points = ','.join(npsh_points)
         mark_inst.efficiency_curve_points = ','.join(efficiency_points)
         mark_inst.q_optimal = q_optimal
-        mark_inst.dn = dn
-        mark_inst.cost = cost
-        mark_inst.speed = speed
+        mark_inst.dn = round(dn, 2)
+        mark_inst.cost = round(cost, 2)
+        mark_inst.speed = round(speed, 2)
         mark_inst.mass = mass
+        mark_inst.capacity = capacity
+        mark_inst.size = size
         mark_inst.save()
 
 def list_by_prefix(prefix, table, row):

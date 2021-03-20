@@ -26,6 +26,8 @@ class EqMark(models.Model):
     cost = models.CharField(max_length=10, default='not_specified')
     speed = models.CharField(max_length=10, default='not_specified')
     mass = models.FloatField(default=-1)
+    capacity = models.FloatField(default=-1)
+    size = models.CharField(max_length=16, default='-')
 
     # curves fields
     default_curve_string = ','.join(['0.00']*8)

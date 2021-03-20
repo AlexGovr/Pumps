@@ -91,15 +91,16 @@ def init_select(request):
         0: 'eqtype-eqmodel-manufacturer-name',
         1: 'eqtype-eqmodel-eqmodel',
     }
+    # Бренд	Модель	КПД	Потребляемая мощность сети	Габариты	Общий вес	Сроки поставки	Скорость
 
     best_indextokey = {
         0: 'eqtype-eqmodel-manufacturer-name',
         1: 'eqtype-eqmodel-eqmodel',
-        2: 'eqmark',
-        3: 'eqmark',
-        4: 'eqmark',
-        5: 'eqmark',
+        2: 'eff_wp',
+        3: 'capacity',
+        4: 'size',
+        5: 'mass',
         6: 'eqmark',
-        7: 'eqmark',
+        7: 'speed',
     }
     return Response({'indextokey': indextokey, 'list_indextokey': list_indextokey, 'best_indextokey': best_indextokey})

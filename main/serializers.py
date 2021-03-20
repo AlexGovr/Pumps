@@ -37,7 +37,8 @@ class MarkSerializer(serializers.ModelSerializer):
             'id', 'eqmark', 'eqtype',
             'eqmodel', 'manufacturer',
             'cost', 'speed', 'dn',
-            'q_optimal', 'mass',
+            'q_optimal', 'mass', 'capacity',
+            'size',
         ]
         curve_fields = [
             'h_curve_points',
