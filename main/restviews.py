@@ -34,13 +34,15 @@ class MarkViewSet(viewsets.ModelViewSet):
         wpq = float(data['wpq'])
         wph = float(data['wph'])
         marks = EqMark.objects.all()
-        choosen, best_indices, add = choose_pumps(marks, (wpq, wph))
+        choosen, best_indices, add, q_load, h_load = choose_pumps(marks, (wpq, wph))
         srl = MarkSerializer(choosen, many=True)
         self.convert_points_to_float(srl.data)
         self.fill_with_additional_data(srl.data, add)
         data = {
             'all': srl.data,
             'best': best_indices,
+            'h_load': h_load,
+            'q_load': q_load,
         }
         return Response(data)
 

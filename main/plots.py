@@ -212,8 +212,9 @@ def choose_pumps(all_marks, work_point):
     '''
     q, h = work_point
     choosen = []
-    additional_data = {}
+    additional = {}
     # choose siutable marks
+    curves = None
     for mark in all_marks:
         curves = Curves(mark)
         curves.compute_work_parameters(work_point)
@@ -235,9 +236,12 @@ def choose_pumps(all_marks, work_point):
             }
             # format additional_data
             add = {k:formatted(v) for (k, v) in add.items()}
-            additional_data[mark.id] = add
+            additional[mark.id] = add
 
-    return choosen, best_solutions(choosen), additional_data
+    q_load = curves.q_points_coarse
+    h_load = [curves.h_load_fun(q) for q in q_load]
+
+    return choosen, best_solutions(choosen), additional, q_load, h_load
 
 
 def best_solutions(choosen):
