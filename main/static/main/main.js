@@ -65,7 +65,6 @@ class GraphBoard {
     }
 
     is_drawn(index) {
-        console.log(this.board_objects)
         return index in this.board_objects
     }
 }
@@ -267,7 +266,6 @@ function best_reset(data, indices) {
 
 function get_deep(data, strpath) {
     var keys = strpath.split('-');
-    console.log(data)
     var val = data[keys[0]];
     for (let i = 1; i < keys.length; i++) {
         if (!(keys[i] in val)) {
