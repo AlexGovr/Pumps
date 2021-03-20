@@ -1,8 +1,9 @@
 
 class GraphBoard {
+
     constructor(tag_cls, data_field, wp_field) {
         this.board = JXG.JSXGraph.initBoard(tag_cls, {boundingbox:[0,5,5,0], axis:true})
-        this.board_objects = {}
+        this.board_objects = {'h_load': []}
         this.x = {}
         this.y = {}
         this.data_field = data_field
@@ -14,13 +15,10 @@ class GraphBoard {
         var y_points = mark_data[this.data_field]
         this.x[key] = q_points
         this.y[key] = y_points
-        var p = []
         var mark_board_objects = []
         this.board_objects[key] = mark_board_objects
-        for (var i in q_points) {
-            p[i] = this.board.create('point', [q_points[i], y_points[i]]);
-        }
-        var spline = this.board.create('spline', p, {strokeWidth:3})
+
+        var spline = this.draw_spline(q_points, y_points)
         mark_board_objects.push(spline)
         this.adjust_scale()
         // add working point
@@ -28,10 +26,25 @@ class GraphBoard {
         var y_wp = mark_data[this.wp_field]
         var wp = this.board.create('point', [x_wp, y_wp], {size: 4, face: 'o'})
         mark_board_objects.push(wp)
+    }
+
+    draw_hload() {
+        console.log([q_load, h_load])
+        var spline = this.draw_spline(q_load, h_load)
+        this.board_objects['h_load'].push(spline)
+    }
+
+    draw_spline(x, y) {
+        var p = []
+        for (var i in x) {
+            p[i] = this.board.create('point', [x[i], y[i]]);
+        }
+        var spline = this.board.create('spline', p, {strokeWidth:3})
         // remove spline points
         for (var i in p) {
             this.board.removeObject(p[i])
         }
+        return spline
     }
 
     adjust_scale() {
@@ -70,7 +83,7 @@ class GraphBoard {
 }
 
 var indextokey, list_indextokey, table, select_list, graph_board, board_objects = [], data;
-var best_indices, best_indextokey;
+var best_indices, best_indextokey, h_load, q_load;
 
 //// init
 addEventListener(
@@ -127,6 +140,8 @@ function go_select() {
                     var all_data = JSON.parse(this.responseText)
                     data = all_data['all']
                     best_indices = all_data['best']
+                    h_load = all_data['h_load']
+                    q_load = all_data['q_load']
                     table_reset(data);
                     clearall_graphs()
                     draw_graphs(0)
@@ -279,6 +294,7 @@ function get_deep(data, strpath) {
 function draw_graphs(index) {
     var mark_data = data[index]
     graph_board.draw(mark_data, index)
+    graph_board.draw_hload()
     graph_board_p2.draw(mark_data, index)
     graph_board_eff.draw(mark_data, index)
     graph_board_npsh.draw(mark_data, index)
